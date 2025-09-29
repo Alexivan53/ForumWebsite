@@ -12,6 +12,7 @@ interface HeaderProps {
   onLoginClick: () => void;
   onLogoutClick: () => void;
   onViewProfile: (userId: string) => void;
+  onViewAdminPanel: () => void;
   theme: 'light' | 'dark';
   onThemeToggle: () => void;
   notifications: Notification[];
@@ -19,7 +20,7 @@ interface HeaderProps {
   onMarkAllNotificationsAsRead: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ currentUser, onLoginClick, onLogoutClick, onViewProfile, theme, onThemeToggle, notifications, onMarkNotificationAsRead, onMarkAllNotificationsAsRead }) => {
+const Header: React.FC<HeaderProps> = ({ currentUser, onLoginClick, onLogoutClick, onViewProfile, onViewAdminPanel, theme, onThemeToggle, notifications, onMarkNotificationAsRead, onMarkAllNotificationsAsRead }) => {
   const t = useTranslations();
   const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -44,6 +45,7 @@ const Header: React.FC<HeaderProps> = ({ currentUser, onLoginClick, onLogoutClic
   }, []);
   
   const getRoleDisplayName = (role: UserRole) => {
+    if (role === UserRole.ADMIN) return 'Admin';
     return role === UserRole.TEACHER ? t.teacherRole : t.studentRole;
   }
   
@@ -108,6 +110,13 @@ const Header: React.FC<HeaderProps> = ({ currentUser, onLoginClick, onLogoutClic
                                         {t.myProfile}
                                     </button>
                                 </li>
+                                {currentUser.role === UserRole.ADMIN && (
+                                  <li>
+                                    <button onClick={() => { onViewAdminPanel(); setIsUserDropdownOpen(false); }} className="w-full text-left flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
+                                      Admin Panel
+                                    </button>
+                                  </li>
+                                )}
                                 <li>
                                     <button onClick={() => { onLogoutClick(); setIsUserDropdownOpen(false); }} className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-slate-100 dark:hover:bg-slate-700">
                                         {t.logout}

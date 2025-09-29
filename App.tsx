@@ -736,7 +736,11 @@ const App: React.FC = () => {
     }
 
     if (view.page === 'admin') {
-      return <AdminPanel />;
+      if (currentUser?.role === UserRole.ADMIN) {
+        return <AdminPanel />;
+      } else {
+        return <p>You are not authorized to view this page.</p>;
+      }
     }
 
     return null;
