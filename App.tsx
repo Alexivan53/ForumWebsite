@@ -8,6 +8,7 @@ import ProfilePage from './components/ProfilePage';
 import EditProfileModal from './components/EditProfileModal';
 import Footer from './components/Footer';
 import UserDirectory from './components/UserDirectory';
+import AdminPanel from './components/AdminPanel';
 import { Post, User, Subject, SortOrder, UserRole, Reply, Notification, NotificationType } from './types';
 import { SUBJECTS } from './constants';
 import { useTranslations } from './useTranslations';
@@ -15,7 +16,7 @@ import { supabase } from './supabaseClient';
 import { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 
-type View = { page: 'home' } | { page: 'profile', userId: string } | { page: 'directory' };
+type View = { page: 'home' } | { page: 'profile', userId: string } | { page: 'directory' } | { page: 'admin' };
 
 const App: React.FC = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -279,6 +280,10 @@ const App: React.FC = () => {
 
   const handleViewDirectory = () => {
     setView({ page: 'directory' });
+  };
+
+  const handleViewAdminPanel = () => {
+    setView({ page: 'admin' });
   };
   
   const parseMentionsAndNotify = useCallback(async (content: string, senderId: string, postId: string, postTitle: string, replyId?: string) => {
@@ -730,6 +735,10 @@ const App: React.FC = () => {
       );
     }
 
+    if (view.page === 'admin') {
+      return <AdminPanel />;
+    }
+
     return null;
   }
 
@@ -740,6 +749,7 @@ const App: React.FC = () => {
         onLoginClick={() => setIsLoginModalOpen(true)} 
         onLogoutClick={handleLogout}
         onViewProfile={handleViewProfile}
+        onViewAdminPanel={handleViewAdminPanel}
         theme={theme}
         onThemeToggle={handleThemeToggle}
         notifications={userNotifications}
